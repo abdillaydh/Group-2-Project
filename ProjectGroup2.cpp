@@ -1,5 +1,6 @@
 #include<iostream>
 #include<string>
+#include<iomanip>
 using namespace std;
 
 struct Data {
@@ -142,4 +143,51 @@ void tampilData(Data dt[], int n){
 		cout << setw(10) << dt[i].spek;
 		cout << endl;
 	}
+}
+
+void tampilMenu() {
+	cout << "\n=== INVENTORY MANAGER ===\n"
+         << "1. Tambah data\n"
+         << "2. Tampil data\n"
+         << "3. Statistik (rata-rata, min, maks)\n"
+         << "4. Urutkan data\n"
+         << "5. Cari data\n"
+         << "6. Total storage (rekursif)\n"
+         << "7. Filter syarat (tantangan)\n"
+         << "0. Keluar\n"
+         << "Pilih: ";
+}
+
+int main () {
+	Data data[MAX];
+	int n=0;
+	int pilih;
+
+	do {
+        tampilMenu();
+        cin >> pilih;
+
+        switch (pilih) {
+            case 1: tambahData(data, n); break;
+            case 2: tampilData(data, n); break;
+            //case 3: menuStatistik(data, n); break;
+            //case 4: menuUrut(data, n); break;
+            //case 5: menuCari(data, n); break;
+            case 6:
+                cout << "Total storage semua perangkat: "
+                     << totalStorage(data, n) << " GB\n";
+                break;
+            case 7: {
+                int r, s;
+                cout << "Minimal RAM (GB)     : "; cin >> r;
+                cout << "Minimal storage (GB) : "; cin >> s;
+                //filterSyarat(data, n, r, s);
+                break;
+            }
+            case 0: cout << "Terima kasih. Program selesai.\n"; break;
+            default: cout << "Pilihan tidak valid.\n";
+        }
+    } while (pilih != 0);
+
+    return 0;
 }
