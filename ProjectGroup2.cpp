@@ -1,6 +1,5 @@
 #include<iostream>
 #include<string>
-#include<iomanip>
 using namespace std;
 
 struct Data {
@@ -144,50 +143,67 @@ void tampilData(Data dt[], int n){
 		cout << endl;
 	}
 }
-
-void tampilMenu() {
-	cout << "\n=== INVENTORY MANAGER ===\n"
-         << "1. Tambah data\n"
-         << "2. Tampil data\n"
-         << "3. Statistik (rata-rata, min, maks)\n"
-         << "4. Urutkan data\n"
-         << "5. Cari data\n"
-         << "6. Total storage (rekursif)\n"
-         << "7. Filter syarat (tantangan)\n"
-         << "0. Keluar\n"
-         << "Pilih: ";
+//ascending
+void urutkanRAM(Data data[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (data[j].ram > data[j + 1].ram) {
+                Data temp = data[j];
+                data[j] = data[j + 1];
+                data[j + 1] = temp;
+            }
+        }
+    }
 }
 
-int main () {
-	Data data[MAX];
-	int n=0;
-	int pilih;
-
-	do {
-        tampilMenu();
-        cin >> pilih;
-
-        switch (pilih) {
-            case 1: tambahData(data, n); break;
-            case 2: tampilData(data, n); break;
-            //case 3: menuStatistik(data, n); break;
-            //case 4: menuUrut(data, n); break;
-            //case 5: menuCari(data, n); break;
-            case 6:
-                cout << "Total storage semua perangkat: "
-                     << totalStorage(data, n) << " GB\n";
-                break;
-            case 7: {
-                int r, s;
-                cout << "Minimal RAM (GB)     : "; cin >> r;
-                cout << "Minimal storage (GB) : "; cin >> s;
-                //filterSyarat(data, n, r, s);
-                break;
+//ascending
+void urutkanStorage(Data data[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (data[j].storage > data[j + 1].storage) {
+                Data temp = data[j];
+                data[j] = data[j + 1];
+                data[j + 1] = temp;
             }
-            case 0: cout << "Terima kasih. Program selesai.\n"; break;
-            default: cout << "Pilihan tidak valid.\n";
         }
-    } while (pilih != 0);
+    }
+}
 
-    return 0;
+int cariID(Data data[], int n, string id) {
+    for (int i = 0; i < n; i++) {
+        if (data[i].id == id) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void cariPemilik(Data data[], int n, string name) {
+    bool ditemukan = false;
+    for (int i = 0; i < n; i++) {
+        if (data[i].name == name) {
+            cout << "ID: " << data[i].id << endl;
+            cout << "Nama: " << data[i].name << endl;
+            cout << "Jenis: " << data[i].type << endl;
+            ditemukan = true;
+        }
+    }
+    if (!ditemukan) {
+        cout << "Data tidak ditemukan." << endl;
+    }
+}
+
+void cariSoftware(Data dta[], int n, string software) {
+    bool ditemukan = false;
+    for (int i = 0; i < n; i++) {
+        if (data[i].software == software) {
+            cout << "ID: " << data[i].id << endl;
+            cout << "Nama: " << data[i].name << endl;
+            cout << "Software: " << data[i].software << endl;
+            ditemukan = true;
+        }
+    }
+    if (!ditemukan) {
+        cout << "Data tidak ditemukan." << endl;
+    }
 }
