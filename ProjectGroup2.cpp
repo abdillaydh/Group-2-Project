@@ -119,6 +119,7 @@ void tampilData(Data dt[], int n){
 		cout << "Data kosong";
 		return;
 	} 
+	klasifikasiSpek(dt,n);
 	
 	cout << left;
 	cout << setw(10) << "ID";
@@ -158,6 +159,139 @@ void tampilMenu() {
          << "Pilih: ";
 }
 
+void menuStatistik(Data dt[], int n) {
+    if (n == 0) {
+        cout << "Data kosong. Tidak ada statistik.\n";
+        return;
+    }
+    klasifikasiSpek(dt, n);
+
+    int high = 0, medium = 0, low = 0;
+    for (int i = 0; i < n; i++) {
+        if (dt[i].spek == "High") high++;
+        else if (dt[i].spek == "Medium") medium++;
+        else low++;
+    }
+
+    cout << "\n=== STATISTIK INVENTORY ===\n";
+    cout << fixed << setprecision(2);
+    cout << "Jumlah data          : " << n << endl;
+    cout << "Rata-rata RAM        : " << avgRAM(dt, n) << " GB\n";
+    cout << "Rata-rata Storage    : " << avgStorage(dt, n) << " GB\n";
+    cout << "RAM minimum          : " << cariMinRam(dt, n) << " GB\n";
+    cout << "RAM maksimum         : " << cariMaxRam(dt, n) << " GB\n";
+    cout << "Total storage        : " << totalStorage(dt, n) << " GB\n";
+    cout << "\nDistribusi spesifikasi:\n";
+    cout << "  High   : " << high << " perangkat\n";
+    cout << "  Medium : " << medium << " perangkat\n";
+    cout << "  Low    : " << low << " perangkat\n";
+}
+
+void menuCari(Data dt[], int n) {
+    if (n == 0) {
+        cout << "Data kosong. Tidak ada yang dicari.\n";
+        return;
+    }
+
+    int pilih;
+    cout << "\n=== CARI DATA ===\n";
+    cout << "1. Berdasarkan ID\n";
+    cout << "2. Berdasarkan Nama (substring)\n";
+    cout << "3. Berdasarkan Jenis\n";
+    cout << "Pilih: ";
+    cin >> pilih;
+    cin.ignore();
+
+    string keyword;
+    cout << "Masukkan kata kunci: ";
+    getline(cin, keyword);
+
+    bool ketemu = false;
+    int jumlah = 0;
+
+    cout << "\n--- Hasil Pencarian ---\n";
+    for (int i = 0; i < n; i++) {
+        bool cocok = false;
+        switch (pilih) {
+            case 1: cocok = (dt[i].id == keyword); break;
+            case 2: cocok = (dt[i].name.find(keyword) != string::npos); break;
+            case 3: cocok = (dt[i].type == keyword); break;
+            default:
+                cout << "Pilihan tidak valid.\n";
+                return;
+        }
+        if (cocok) {
+            if (!ketemu) {
+                cout << left;
+                cout << setw(10) << "ID" << setw(14) << "Pemilik"
+                     << setw(14) << "Jenis" << setw(6) << "RAM"
+                     << setw(10) << "Storage" << setw(14) << "Software"
+                     << setw(10) << "Status" << setw(10) << "Spek" << endl;
+                cout << string(88, '-') << endl;
+                ketemu = true;
+            }
+            cout << left;
+            cout << setw(10) << dt[i].id;
+            cout << setw(14) << dt[i].name;
+            cout << setw(14) << dt[i].type;
+            cout << setw(6)  << dt[i].ram;
+            cout << setw(10) << dt[i].storage;
+            cout << setw(14) << dt[i].software;
+            cout << setw(10) << dt[i].status;
+            cout << setw(10) << dt[i].spek;
+            cout << endl;
+            jumlah++;
+        }
+    }
+
+    if (!ketemu) {
+        cout << "Data tidak ditemukan.\n";
+    } else {
+        cout << "\nTotal ditemukan: " << jumlah << " data.\n";
+    }
+}
+
+void menuUrut(Data dt[], int n) {
+    if (n == 0) {
+        cout << "Data kosong. Tidak ada yang diurutkan.\n";
+        return;
+    }
+
+    int pilih;
+    cout << "\n=== URUTKAN DATA ===\n";
+    cout << "1. Berdasarkan RAM (ascending)\n";
+    cout << "2. Berdasarkan RAM (descending)\n";
+    cout << "3. Berdasarkan Storage (ascending)\n";
+    cout << "4. Berdasarkan Storage (descending)\n";
+    cout << "5. Berdasarkan Nama (A-Z)\n";
+    cout << "Pilih: ";
+    cin >> pilih;
+
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            bool tukar = false;
+            switch (pilih) {
+                case 1: tukar = dt[j].ram > dt[j+1].ram; break;
+                case 2: tukar = dt[j].ram < dt[j+1].ram; break;
+                case 3: tukar = dt[j].storage > dt[j+1].storage; break;
+                case 4: tukar = dt[j].storage < dt[j+1].storage; break;
+                case 5: tukar = dt[j].name > dt[j+1].name; break;
+                default:
+                    cout << "Pilihan tidak valid.\n";
+                    return;
+            }
+            if (tukar) {
+                Data temp = dt[j];
+                dt[j] = dt[j+1];
+                dt[j+1] = temp;
+            }
+        }
+    }
+
+    cout << "Data berhasil diurutkan.\n";
+    tampilData(dt, n);
+}
+
 int main () {
 	Data data[MAX];
 	int n=0;
@@ -170,9 +304,9 @@ int main () {
         switch (pilih) {
             case 1: tambahData(data, n); break;
             case 2: tampilData(data, n); break;
-            //case 3: menuStatistik(data, n); break;
-            //case 4: menuUrut(data, n); break;
-            //case 5: menuCari(data, n); break;
+            case 3: menuStatistik(data, n); break;
+            case 4: menuUrut(data, n); break;
+            case 5: menuCari(data, n); break;
             case 6:
                 cout << "Total storage semua perangkat: "
                      << totalStorage(data, n) << " GB\n";
