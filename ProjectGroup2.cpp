@@ -65,6 +65,17 @@ int cariMaxRam(Data dt[], int n) {
 
     return maxRAM;
 }
+void klasifikasiSpek(Data dt[], int n){
+	for(int i = 0; i < n; i++){
+		if(dt[i].ram >= 16 && dt[i].storage >= 512){
+			dt[i].spek = "High";
+		} else if(dt[i].ram >= 8 && dt[i].storage >= 256){
+			dt[i].spek = "Medium";
+		} else{
+			dt[i].spek = "Low";
+		}
+	}
+}
 
 void tambahData(Data dt[], int &n){
 	if(n >= MAX){
@@ -83,11 +94,22 @@ void tambahData(Data dt[], int &n){
 	getline(cin, dt[n].type);
 	
 	cout << "Masukkan RAM \t\t: ";
-	cin >> dt[n].ram;
+	while (!(cin >> dt[n].ram) || (dt[n].ram < 0)){
+	    cout<<"Input tidak valid. Pastikan input merupakan bilangan bulat positif.\n";
+	    cin.clear();
+	    cin.ignore(100,'\n');
+	    cout<<"Masukkan RAM \t: ";
+	}
+	
 	
 	cout << "Masukkan Storage \t: ";
-	cin >> dt[n].storage;
-	
+	while (!(cin >> dt[n].storage) || (dt[n].storage < 0)){
+	    cout<<"Input tidak valid. Pastikan input merupakan bilangan bulat positif.\n";
+	    cin.clear();
+	    cin.ignore(100,'\n');
+	    cout<<"Masukkan Storage \t: ";
+	}
+	klasifikasiSpek(dt,n+1);
 	if(dt[n].ram > 0 && dt[n].storage > 0){
 		cout << "Masukkan jenis software : ";
 		cin >> dt[n].software;
@@ -102,24 +124,12 @@ void tambahData(Data dt[], int &n){
 	n++;
 }
 
-void klasifikasiSpek(Data dt[], int n){
-	for(int i = 0; i < n; i++){
-		if(dt[i].ram >= 16 && dt[i].storage >= 512){
-			dt[i].spek = "High";
-		} else if(dt[i].ram >= 8 && dt[i].storage >= 256){
-			dt[i].spek = "Medium";
-		} else{
-			dt[i].spek = "Low";
-		}
-	}
-}
 
 void tampilData(Data dt[], int n){
 	if(n == 0){
 		cout << "Data kosong";
 		return;
 	} 
-	klasifikasiSpek(dt,n);
 	
 	cout << left;
 	cout << setw(10) << "ID";
@@ -222,6 +232,7 @@ void menuCari(Data dt[], int n) {
         }
         if (cocok) {
             if (!ketemu) {
+                // cetak header sekali
                 cout << left;
                 cout << setw(10) << "ID" << setw(14) << "Pemilik"
                      << setw(14) << "Jenis" << setw(6) << "RAM"
