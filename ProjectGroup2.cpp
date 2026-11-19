@@ -1,6 +1,7 @@
 #include<iostream>
 #include<string>
 #include<iomanip>
+#include <limits>
 using namespace std;
 
 struct Data {
@@ -82,15 +83,30 @@ void tambahData(Data dt[], int &n){
 	cout << "Masukkan jenis \t\t: ";
 	getline(cin, dt[n].type);
 	
-	cout << "Masukkan RAM \t\t: ";
-	cin >> dt[n].ram;
-	
-	cout << "Masukkan Storage \t: ";
-	cin >> dt[n].storage;
+	while (true) {
+        cout << "Masukkan RAM \t\t: ";
+        if (cin >> dt[n].ram && cin.peek() == '\n') {
+            break;
+        }
+        cout << "Input harus berupa angka!\n";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+
+    while (true) {
+        cout << "Masukkan Storage \t: ";
+        if (cin >> dt[n].storage && cin.peek() == '\n') {
+            break;
+        }
+        cout << "Input harus berupa angka!\n";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
 	
 	if(dt[n].ram > 0 && dt[n].storage > 0){
+        cin.ignore();
 		cout << "Masukkan jenis software : ";
-		cin >> dt[n].software;
+		getline(cin, dt[n].software); 
 		
 		cout << "Masukkan status \t: ";
 		cin >> dt[n].status;
